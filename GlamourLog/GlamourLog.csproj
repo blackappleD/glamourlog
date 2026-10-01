@@ -2,13 +2,11 @@
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
 	<PropertyGroup>
 		<!-- 国服维护版版本号：前三段跟随上游（上游 15.69 视为 15.69.0），第 4 段从 2001 起递增 -->
-		<Version>15.69.0.2001</Version>
-		<AssemblyName>GlamourLog-bld</AssemblyName>
-		<RootNamespace>GlamourLog</RootNamespace>
+		<Version>15.69.0.2002</Version>
 		<LangVersion>preview</LangVersion>
 		<Author>croizat, blackappleD</Author>
 		<Name>Glamour Log（国服维护版）</Name>
-		<InternalName>GlamourLog-bld</InternalName>
+		<InternalName>GlamourLog</InternalName>
 		<Punchline>Gotta collect 'em all</Punchline>
 		<Description>A log for all your glamours and other glam-related tweaks. Localized fork with Simplified Chinese support.</Description>
 		<RepoUrl>https://github.com/blackappleD/glamourlog</RepoUrl>
