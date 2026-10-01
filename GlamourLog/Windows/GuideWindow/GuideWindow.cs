@@ -129,7 +129,7 @@ public unsafe partial class GuideWindow : NativeAddon {
             LineSpacing = 20,
             AlignmentType = AlignmentType.Left,
             TextColor = ColourPalette.HeadingGrey,
-            String = "Category",
+            String = Loc.Get("Guide.Category"),
         };
         _categoryHeading.RemoveTextFlags(TextFlags.Emboss);
         _categoryHeading.AddTextFlags(TextFlags.Emboss);

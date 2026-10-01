@@ -43,7 +43,7 @@ internal sealed class FilterModeRowNode : ResNode {
         var optionWidth = (width - LabelWidth - InfoButtonGap - InfoButtonSize - OptionGap * 2f) / 3f;
         _buttons = [.. Enum.GetValues<FilterType>()
             .Select((mode, index) => {
-                var button = new FilterRadioButtonNode(mode.ToString(), () => {
+                var button = new FilterRadioButtonNode(Loc.Get($"FilterType.{mode}"), () => {
                     write(mode);
                     onChanged();
                 }) {

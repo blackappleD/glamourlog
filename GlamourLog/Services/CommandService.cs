@@ -6,15 +6,15 @@ namespace GlamourLog.Services;
 
 internal sealed class CommandService : IPluginCommands {
     public string[] Commands { get; } = ["/glamourlog", "/gl"];
-    public string HelpMessage => $"Toggle the {nameof(GlamourLog)} window";
+    public string HelpMessage => Loc.Get("Command.Help");
 
     public CommandNode<object> Root => field ??= Build();
 
     private static CommandNode<object> Build()
-        => CommandNode<object>.Root("Glamour Log commands")
+        => CommandNode<object>.Root(Loc.Get("Command.Root"))
             .Default(WindowsService.Get().ToggleMainWindow)
-            .Sub("stop", "Cancel any running tasks", Svc.Automation.Stop)
-            .Sub("store", "Store all eligible items in your armoire/dresser", () => {
+            .Sub("stop", Loc.Get("Command.Stop"), Svc.Automation.Stop)
+            .Sub("store", Loc.Get("Command.Store"), () => {
                 if (AtkUnitBase.IsAddonReady("Cabinet"))
                     Svc.Automation.Start(new StoreAllArmoireTask());
                 if (AtkUnitBase.IsAddonReady("MiragePrismPrismBoxCrystallize"))

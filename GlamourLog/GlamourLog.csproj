@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
 	<PropertyGroup>
-		<Version>15.69</Version>
+		<!-- 国服维护版版本号：前三段跟随上游（上游 15.69 视为 15.69.0），第 4 段从 2001 起递增 -->
+		<Version>15.69.0.2001</Version>
+		<AssemblyName>GlamourLog-bld</AssemblyName>
+		<RootNamespace>GlamourLog</RootNamespace>
 		<LangVersion>preview</LangVersion>
-		<Author>croizat</Author>
-		<Name>Glamour Log</Name>
-		<InternalName>GlamourLog</InternalName>
+		<Author>croizat, achen</Author>
+		<Name>Glamour Log（国服维护版）</Name>
+		<InternalName>GlamourLog-bld</InternalName>
 		<Punchline>Gotta collect 'em all</Punchline>
-		<Description>A log for all your glamours and other glam-related tweaks</Description>
-		<RepoUrl>https://github.com/Jaksuhn/ffxiv_glamourlog</RepoUrl>
+		<Description>A log for all your glamours and other glam-related tweaks. Localized fork with Simplified Chinese support.</Description>
+		<RepoUrl>https://github.com/blackappleD/glamourlog</RepoUrl>
 		<IconUrl>https://puni.sh/api/plugins/icon/136</IconUrl>
 		<Tags>glamour</Tags>
 
@@ -18,6 +21,10 @@
     <ItemGroup>
 		<None Include="DalamudPackager.targets" />
     </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Localization\*.json" LogicalName="GlamourLog.Localization.%(Filename).json" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(LocalCS)'=='true'">
 		<DefineConstants>LOCAL_CS</DefineConstants>

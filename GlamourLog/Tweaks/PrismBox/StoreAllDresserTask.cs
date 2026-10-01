@@ -73,7 +73,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
             return;
 
         if (rows.Count > GlamourPrismCount) {
-            IChatGui.Get().EchoError($"Unable to store items. Insufficient glamour prisms");
+            IChatGui.Get().EchoError(Loc.Get("Store.InsufficientPrisms"));
             throw new InvalidOperationException($"Insufficent glamour prisms");
         }
 
@@ -86,10 +86,11 @@ internal sealed class StoreAllDresserTask : TaskBase {
         MarkStored(result.SentPieces.Select(p => p.ItemId));
 
         var builder = new SeStringBuilder()
-            .Append($"Stored {result.FilledCount} item{(result.FilledCount is 1 ? string.Empty : 's')} in ")
+            .Append(Loc.Format(result.FilledCount is 1 ? "Store.StoredOne" : "Store.StoredMany", result.FilledCount))
             .AddUiForeground(549).AddUiGlow(550)
             .Append($"{setName}")
-            .AddUiGlowOff().AddUiForegroundOff();
+            .AddUiGlowOff().AddUiForegroundOff()
+            .Append(Loc.Get("Store.StoredSuffix"));
         IToastGui.Get().ShowQuest(builder.BuiltString);
         await NextFrame(2);
     }

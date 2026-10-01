@@ -49,5 +49,5 @@ internal sealed class SetListCurrencyFilterNode : ResNode {
     }
 
     private static ReadOnlySeString LabelFor(uint currencyItemId)
-        => currencyItemId == NoneCurrencyId ? "All currencies" : Item.GetRow(currencyItemId).Name;
+        => currencyItemId == NoneCurrencyId ? Loc.Get("Filter.AllCurrencies") : Item.GetRow(currencyItemId).Name;
 }

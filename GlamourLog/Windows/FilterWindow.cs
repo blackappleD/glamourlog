@@ -111,11 +111,11 @@ internal unsafe class FilterWindow : NativeAddon {
             Icon = CircleButtonIcon.Exclamation,
             Position = new Vector2(sectionX + LabelWidth + 174f, y + 7f),
             Size = new Vector2(22f),
-            TextTooltip = "Whether or not an item should be wearable by only the matching job(s) or if it should contain that job.",
+            TextTooltip = Loc.Get("Filter.PartialJobTooltip"),
         });
         y += 40f;
 
-        AddLabel("Expansion", sectionX, y, LabelWidth, 24f);
+        AddLabel(Loc.Get("Filter.Expansion"), sectionX, y, LabelWidth, 24f);
         var expansionX = sectionX + LabelWidth;
         var expansionWidth = sectionWidth - LabelWidth;
         var expansionColumnWidth = sectionWidth / 3f;
@@ -248,17 +248,17 @@ internal unsafe class FilterWindow : NativeAddon {
         AddSectionTitle(Addon.GetRow(66).Text.ToString(), x, y, contentWidth);
         y += 28f;
 
-        AddModeRow("Completed", "Whether every obtainable piece in the set is owned.", draft => draft.Completed, (draft, value) => draft.Completed = value);
-        AddModeRow("Incompatible", "Whether the set cannot be worn by your character's race and sex.", draft => draft.Incompatible, (draft, value) => draft.Incompatible = value);
-        AddModeRow("Unobtainable", "Whether the set cannot currently be obtained.", draft => draft.Unobtainable, (draft, value) => draft.Unobtainable = value);
-        AddModeRow("Mogstation", "Whether the set is obtained from the Mogstation.", draft => draft.Mogstation, (draft, value) => draft.Mogstation = value);
-        AddModeRow("Contributable", "Whether an inventory piece can currently be contributed to the set.", draft => draft.Contributable, (draft, value) => draft.Contributable = value);
-        AddModeRow("Affordable", "Whether you can afford the preferred costs of every missing piece.", draft => draft.Affordable, (draft, value) => draft.Affordable = value);
-        AddModeRow("Tradeable", "Whether the set has a piece that can be traded or bought on the market board.", draft => draft.Tradeable, (draft, value) => draft.Tradeable = value);
-        AddModeRow("Started", "Whether the set is partially completed.", draft => draft.Started, (draft, value) => draft.Started = value);
-        AddModeRow("Armoire", "Whether the set contains a piece that can be stored in the armoire.", draft => draft.Armoire, (draft, value) => draft.Armoire = value);
-        AddModeRow("Misplaced", "Whether an armoire-eligible piece is currently stored in the glamour dresser.", draft => draft.Misplaced, (draft, value) => draft.Misplaced = value);
-        AddModeRow("Shared model", "Whether another set shares the same complete set of equipment models.", draft => draft.SharedModel, (draft, value) => draft.SharedModel = value);
+        AddModeRow(Loc.Get("Filter.Completed"), Loc.Get("Filter.Completed.Tooltip"), draft => draft.Completed, (draft, value) => draft.Completed = value);
+        AddModeRow(Loc.Get("Filter.Incompatible"), Loc.Get("Filter.Incompatible.Tooltip"), draft => draft.Incompatible, (draft, value) => draft.Incompatible = value);
+        AddModeRow(Loc.Get("Filter.Unobtainable"), Loc.Get("Filter.Unobtainable.Tooltip"), draft => draft.Unobtainable, (draft, value) => draft.Unobtainable = value);
+        AddModeRow(Loc.Get("Filter.Mogstation"), Loc.Get("Filter.Mogstation.Tooltip"), draft => draft.Mogstation, (draft, value) => draft.Mogstation = value);
+        AddModeRow(Loc.Get("Filter.Contributable"), Loc.Get("Filter.Contributable.Tooltip"), draft => draft.Contributable, (draft, value) => draft.Contributable = value);
+        AddModeRow(Loc.Get("Filter.Affordable"), Loc.Get("Filter.Affordable.Tooltip"), draft => draft.Affordable, (draft, value) => draft.Affordable = value);
+        AddModeRow(Loc.Get("Filter.Tradeable"), Loc.Get("Filter.Tradeable.Tooltip"), draft => draft.Tradeable, (draft, value) => draft.Tradeable = value);
+        AddModeRow(Loc.Get("Filter.Started"), Loc.Get("Filter.Started.Tooltip"), draft => draft.Started, (draft, value) => draft.Started = value);
+        AddModeRow(Loc.Get("Filter.Armoire"), Loc.Get("Filter.Armoire.Tooltip"), draft => draft.Armoire, (draft, value) => draft.Armoire = value);
+        AddModeRow(Loc.Get("Filter.Misplaced"), Loc.Get("Filter.Misplaced.Tooltip"), draft => draft.Misplaced, (draft, value) => draft.Misplaced = value);
+        AddModeRow(Loc.Get("Filter.SharedModel"), Loc.Get("Filter.SharedModel.Tooltip"), draft => draft.SharedModel, (draft, value) => draft.SharedModel = value);
         SyncModeRows();
 
         const float buttonWidth = 116f;

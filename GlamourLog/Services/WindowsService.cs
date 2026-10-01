@@ -31,14 +31,14 @@ internal sealed class WindowsService : IPluginService, IAsyncDisposable {
 
     internal AddonFilterWindow AddonFilterWindow => _addonFilterWindow ??= new AddonFilterWindow {
         InternalName = "GlamourLogAddonFilter",
-        Title = "Filters",
+        Title = Loc.Get("Window.AddonFilter.Title"),
         Size = new Vector2(AddonFilterWindow.WindowWidth, AddonFilterWindow.HeightFor(2)),
         RememberClosePosition = false,
     };
 
     internal PatchPickerWindow PatchPickerWindow => _patchPickerWindow ??= new PatchPickerWindow {
         InternalName = "GlamourLogPatchPicker",
-        Title = "Custom Patches",
+        Title = Loc.Get("Window.PatchPicker.Title"),
         Size = new Vector2(PatchPickerWindow.WindowWidth, PatchPickerWindow.WindowHeight),
         RememberClosePosition = false,
     };
@@ -47,14 +47,14 @@ internal sealed class WindowsService : IPluginService, IAsyncDisposable {
 
     internal GuideWindow MainMenuWindow => _mainMenuWindow ??= new GuideWindow {
         InternalName = "GlamourLogGuide",
-        Title = "Help & Settings",
+        Title = Loc.Get("Window.Guide.Title"),
         Size = new Vector2(GuideWindow.WindowWidth, GuideWindow.WindowHeight),
         RememberClosePosition = false,
     };
 
     internal LogWindow LogWindow => _logWindow ??= new LogWindow(FilterWindow) {
         InternalName = "GlamourLog",
-        Title = "Glamour Log",
+        Title = Loc.Get("Window.Log.Title"),
         Size = new Vector2(920f, 660f),
         RememberClosePosition = false,
     };

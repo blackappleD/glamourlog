@@ -174,7 +174,7 @@ internal sealed class ExtraAddonButtons : IPluginService, IAsyncDisposable {
             Size = new Vector2(size),
             Position = position,
             OnClick = onClick,
-            TextTooltip = "Store all eligible items",
+            TextTooltip = Loc.Get("Tweak.StoreAllTooltip"),
         };
 
     private static Vector2 FilterOriginNearButton(CircleButtonNode? button, float windowWidth) {

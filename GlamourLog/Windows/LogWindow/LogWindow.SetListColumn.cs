@@ -138,7 +138,7 @@ internal unsafe partial class LogWindow {
             var searchRaw = _categoryColumn?.Search.Input.String.ToString() ?? string.Empty;
             var searchTrimmed = string.IsNullOrWhiteSpace(searchRaw) ? string.Empty : searchRaw.Trim();
             if (C.FilterSharedModels != FilterType.Include && !SetListFilterSort.IsVisibleInSetList(set, searchTrimmed, CategoryRows(_selectedCategoryId), q, _filterWindow.Filters))
-                subtitle += " · Not in list";
+                subtitle += Loc.Get("SetList.NotInListSuffix");
         }
 
         return new SetListRowData {
@@ -179,7 +179,7 @@ internal unsafe partial class LogWindow {
         var location = piece?.Location ?? q.Locate(itemId);
         var ownedInStorage = location is PieceLocation.Armoire or PieceLocation.LooseDresser or PieceLocation.OutfitSlot;
         var ownedAnywhere = location is not PieceLocation.None;
-        var subtitle = ownedInStorage ? "Obt. 1/1" : ownedAnywhere ? "In inventory" : "Obt. 0/1";
+        var subtitle = ownedInStorage ? Loc.Format("SetList.Obtained", 1, 1) : ownedAnywhere ? Loc.Get("SetList.InInventory") : Loc.Format("SetList.Obtained", 0, 1);
 
         var storageState = piece?.BadgeLocation ?? location switch {
             PieceLocation.Armoire => ItemStorageState.Armoire,
@@ -234,20 +234,20 @@ internal unsafe partial class LogWindow {
         var c = status.OwnedCount;
         string core;
         if (set.NonSetCabinetPiece) {
-            core = status.IsComplete ? "Obt. 1/1" : $"Obt. {c}/1";
+            core = Loc.Format("SetList.Obtained", status.IsComplete ? 1 : c, 1);
         }
         else if (status.IsComplete)
-            core = $"Obt. {n}/{n}";
+            core = Loc.Format("SetList.Obtained", n, n);
         else if (n == 0)
-            core = "Obt. 0/0";
+            core = Loc.Format("SetList.Obtained", 0, 0);
         else if (c == n)
-            core = "Completable"; // every piece owned, but at least one still needs storing
+            core = Loc.Get("SetList.Completable"); // every piece owned, but at least one still needs storing
         else
-            core = $"Obt. {c}/{n}";
+            core = Loc.Format("SetList.Obtained", c, n);
 
         var sortHint = C.SetListSortMode switch {
-            GlamourSetSortMode.Patch => set.PatchNo == 0m ? "Patch —" : $"Patch {set.PatchNo}",
-            GlamourSetSortMode.ItemLevel => set.ItemLevel == 0 ? "iLvl —" : $"iLvl {set.ItemLevel}",
+            GlamourSetSortMode.Patch => set.PatchNo == 0m ? Loc.Format("SetList.Patch", "—") : Loc.Format("SetList.Patch", set.PatchNo),
+            GlamourSetSortMode.ItemLevel => set.ItemLevel == 0 ? Loc.Format("SetList.ItemLevel", "—") : Loc.Format("SetList.ItemLevel", set.ItemLevel),
             _ => null,
         };
         return sortHint is null ? core : $"{core} · {sortHint}";

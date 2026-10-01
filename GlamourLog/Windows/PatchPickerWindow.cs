@@ -66,7 +66,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
             var selector = AddNode(new ListButtonNode {
                 Position = new Vector2(x + 24f, rowY),
                 Size = new Vector2(LeftPaneWidth - 24f, 24f),
-                String = expansionNames.GetValueOrDefault(group.RowId, $"Expansion {group.RowId + 1}"),
+                String = expansionNames.GetValueOrDefault(group.RowId, Loc.Format("PatchPicker.ExpansionNumbered", group.RowId + 1)),
                 OnClick = () => SelectGroup(controls, rightX, y, rightWidth),
             });
             controls = new PatchGroupControls(group.RowId, parent, selector, group.Patches);
@@ -93,7 +93,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
             FontSize = 12,
             LineSpacing = 12,
             TextColor = ColourPalette.Cream,
-            String = new Lumina.Text.ReadOnly.ReadOnlySeString(new SeStringBuilder().Footnote("Patches are for when an item was added to the game, not necessarily when it was made available.").Encode()),
+            String = new Lumina.Text.ReadOnly.ReadOnlySeString(new SeStringBuilder().Footnote(Loc.Get("PatchPicker.Footnote")).Encode()),
             TextFlags = TextFlags.Emboss | TextFlags.WordWrap | TextFlags.MultiLine,
         });
         AddNode(new HorizontalLineNode {
@@ -103,7 +103,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
         AddNode(new TextButtonNode {
             Position = new Vector2(x + (contentWidth - buttonWidth) * 0.5f, footerY),
             Size = new Vector2(buttonWidth, buttonHeight),
-            String = "Confirm",
+            String = Loc.Get("Common.Confirm"),
             OnClick = () => {
                 _onApply?.Invoke([.. _selection]);
                 Close();
@@ -135,7 +135,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
             AddDetailNode(new CheckboxNode {
                 Position = new Vector2(x + index % columns * columnWidth, y + index / columns * 24f),
                 Size = new Vector2(columnWidth, 24f),
-                String = $"Patch {patch:0.0#}",
+                String = Loc.Format("PatchPicker.Patch", patch),
                 IsChecked = _selection.Contains(patch),
                 OnClick = value => {
                     if (_syncingCheckboxes)
