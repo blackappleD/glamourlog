@@ -6,7 +6,7 @@
 		<AssemblyName>GlamourLog-bld</AssemblyName>
 		<RootNamespace>GlamourLog</RootNamespace>
 		<LangVersion>preview</LangVersion>
-		<Author>croizat, achen</Author>
+		<Author>croizat, blackappleD</Author>
 		<Name>Glamour Log（国服维护版）</Name>
 		<InternalName>GlamourLog-bld</InternalName>
 		<Punchline>Gotta collect 'em all</Punchline>

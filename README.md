@@ -1,4 +1,4 @@
-> **国服维护版（多语言）**：本仓库是 [Jaksuhn/ffxiv_glamourlog](https://github.com/Jaksuhn/ffxiv_glamourlog) 的 fork，由 achen 维护，在上游基础上增加了多语言支持与简体中文翻译。
+> **国服维护版（多语言）**：本仓库是 [Jaksuhn/ffxiv_glamourlog](https://github.com/Jaksuhn/ffxiv_glamourlog) 的 fork，由 blackappleD 维护，在上游基础上增加了多语言支持与简体中文翻译。
 > 界面语言跟随 Dalamud 的界面语言设置（目前支持 English / 简体中文），切换语言后重新打开窗口即可生效。
 > 翻译文件位于 `GlamourLog/Localization/*.json`，欢迎提交改进。
 > 插件库地址：`https://raw.githubusercontent.com/blackappleD/DalamudPlugins/main/repo.json`
