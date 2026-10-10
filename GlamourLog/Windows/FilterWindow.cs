@@ -106,7 +106,7 @@ internal unsafe class FilterWindow : NativeAddon {
                 _draft?.PartialClassJobMatch = value;
             },
         });
-        _partialClassJobCheckbox.Label.TextColor = ColourPalette.Cream;
+        _partialClassJobCheckbox.Label.TextColor = ThemeColours.Standard.Current;
         AddNode(new CircleButtonNode {
             Icon = CircleButtonIcon.Exclamation,
             Position = new Vector2(sectionX + LabelWidth + 174f, y + 7f),
@@ -131,7 +131,7 @@ internal unsafe class FilterWindow : NativeAddon {
                 SyncExpansionControls();
             },
         });
-        _allExpansionsCheckbox.Label.TextColor = ColourPalette.Cream;
+        _allExpansionsCheckbox.Label.TextColor = ThemeColours.Standard.Current;
         _customPatchesButton = AddNode(new TextButtonNode {
             Position = new Vector2(sectionX + sectionWidth - 116f, y),
             Size = new Vector2(116f, 28f),
@@ -167,7 +167,7 @@ internal unsafe class FilterWindow : NativeAddon {
                     SyncExpansionControls();
                 },
             });
-            checkbox.Label.TextColor = ColourPalette.Cream;
+            checkbox.Label.TextColor = ThemeColours.Standard.Current;
             _expansionCheckboxes.Add((expansion.RowId, checkbox));
         }
         SyncExpansionControls();
@@ -235,10 +235,11 @@ internal unsafe class FilterWindow : NativeAddon {
             FontSize = 14,
             LineSpacing = 14,
             AlignmentType = AlignmentType.Left,
-            TextColor = ColourPalette.Cream,
             String = Addon.GetRow(6625).Text.ToString(),
             TextFlags = TextFlags.Emboss,
+            TextColor = ThemeColours.Standard.Current,
         };
+        ThemeColours.ApplyEmboss(_subSourceLabel);
         _subSourceLabel.AttachNode(_subSourceContent);
         _subSourcePosition = new Vector2(LabelWidth, 0f);
         _subSourceSize = new Vector2(sectionWidth - LabelWidth, 24f);
@@ -299,7 +300,7 @@ internal unsafe class FilterWindow : NativeAddon {
             button.LabelNode.FontType = FontType.Axis;
             button.LabelNode.FontSize = 12;
             button.LabelNode.LineSpacing = 12;
-            button.LabelNode.TextColor = ColourPalette.PrimaryWhite;
+            button.LabelNode.TextColor = ThemeColours.Text.Current;
         }
     }
 
@@ -308,31 +309,36 @@ internal unsafe class FilterWindow : NativeAddon {
             Position = new Vector2(x, y),
             Size = new Vector2(width, 2f),
         });
-        AddNode(new TextNode {
+        var titleNode = new TextNode {
             Position = new Vector2(x + 4f, y + 6f),
             Size = new Vector2(width, 20f),
             FontType = FontType.Axis,
             FontSize = 14,
             LineSpacing = 14,
             AlignmentType = AlignmentType.TopLeft,
-            TextColor = ColourPalette.BodyGrey,
             String = title,
             TextFlags = TextFlags.Emboss,
-        });
+            TextColor = ThemeColours.Body.Current,
+        };
+        ThemeColours.ApplyEmboss(titleNode);
+        AddNode(titleNode);
     }
 
-    private TextNode AddLabel(string label, float x, float y, float width, float height)
-        => AddNode(new TextNode {
+    private TextNode AddLabel(string label, float x, float y, float width, float height) {
+        var node = new TextNode {
             Position = new Vector2(x, y),
             Size = new Vector2(width, height),
             FontType = FontType.Axis,
             FontSize = 14,
             LineSpacing = 14,
             AlignmentType = AlignmentType.Left,
-            TextColor = ColourPalette.Cream,
             String = label,
             TextFlags = TextFlags.Emboss,
-        });
+            TextColor = ThemeColours.Standard.Current,
+        };
+        ThemeColours.ApplyEmboss(node);
+        return AddNode(node);
+    }
 
     private T AddNode<T>(T node) where T : NodeBase {
         _nodes.Add(node);
@@ -397,7 +403,7 @@ internal unsafe class FilterWindow : NativeAddon {
             return;
         _syncingExpansionControls = true;
         try {
-            _allExpansionsCheckbox!.IsChecked = !_draft.UseCustomPatches && _draft.ExpansionRowIds.Count == 0;
+            SetCheckedQuiet(_allExpansionsCheckbox!, !_draft.UseCustomPatches && _draft.ExpansionRowIds.Count == 0);
             foreach (var (rowId, checkbox) in _expansionCheckboxes) {
                 var state = _draft.UseCustomPatches
                     ? CustomExpansionState(rowId)
@@ -406,11 +412,26 @@ internal unsafe class FilterWindow : NativeAddon {
                         : CheckboxSelectionState.None;
                 checkbox.SetSelectionState(state);
             }
-            _customPatchesButton?.IsChecked = _draft.UseCustomPatches;
+            if (_customPatchesButton is not null)
+                SetCheckedQuiet(_customPatchesButton, _draft.UseCustomPatches);
         }
         finally {
             _syncingExpansionControls = false;
         }
+    }
+
+    private static void SetCheckedQuiet(CheckboxNode node, bool value) {
+        var onClick = node.OnClick;
+        node.OnClick = null;
+        node.IsChecked = value;
+        node.OnClick = onClick;
+    }
+
+    private static void SetCheckedQuiet(ButtonBase node, bool value) {
+        var onClick = node.OnClick;
+        node.OnClick = null;
+        node.IsChecked = value;
+        node.OnClick = onClick;
     }
 
     private CheckboxSelectionState CustomExpansionState(uint rowId) {
@@ -423,10 +444,15 @@ internal unsafe class FilterWindow : NativeAddon {
     }
 
     private void ToggleCustomPatches() {
-        if (_draft is null)
+        if (_draft is null || _syncingExpansionControls)
             return;
+
+        var picker = WindowsService.Get().PatchPickerWindow;
+        if (picker.IsOpen)
+            return;
+
         var patches = CatalogService.Get().GlamourSets.Select(set => set.PatchNo).Where(patch => patch > 0m).Distinct().OrderBy(patch => patch).ToList();
-        WindowsService.Get().PatchPickerWindow.Open(patches, _draft.PatchNumbers, selected => {
+        picker.Open(patches, _draft.PatchNumbers, selected => {
             if (_draft is null)
                 return;
             _draft.PatchNumbers = selected;
@@ -441,7 +467,7 @@ internal unsafe class FilterWindow : NativeAddon {
 
         _draft.Reset();
         WindowsService.Get().PcSearchSelectClassPicker.SetSelectedClassJobIds([]);
-        _partialClassJobCheckbox!.IsChecked = true;
+        SetCheckedQuiet(_partialClassJobCheckbox!, true);
         _currencyFilter!.DropDown.SelectedOption = SetListCurrencyFilterNode.NoneCurrencyId;
         _sourceDropDown!.SelectedOption = SourceFilterOption.All;
         SyncExpansionControls();
@@ -468,10 +494,17 @@ internal unsafe class FilterWindow : NativeAddon {
         Close();
     }
 
-    protected override void OnFinalize(AtkUnitBase* addon) {
+    protected override void OnHide(AtkUnitBase* addon) {
+        // close children while this addon isn't being destroyed
         WindowsService.Get().ClosePatchPickerIfOpen();
+        WindowsService.Get().PcSearchSelectClassPicker.CloseIfOpen();
+        base.OnHide(addon);
+    }
+
+    protected override void OnFinalize(AtkUnitBase* addon) {
+        var picker = WindowsService.Get().PcSearchSelectClassPicker;
         if (!_committed)
-            WindowsService.Get().PcSearchSelectClassPicker.SetSelectedClassJobIds(Filters.ClassJobIds);
+            picker.SetSelectedClassJobIds(Filters.ClassJobIds, notify: false);
 
         // don't dispose nodes here
         _nodes.Clear();

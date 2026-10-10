@@ -87,7 +87,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
 
         var builder = new SeStringBuilder()
             .Append(Loc.Format(result.FilledCount is 1 ? "Store.StoredOne" : "Store.StoredMany", result.FilledCount))
-            .AddUiForeground(549).AddUiGlow(550)
+            .AddUiForeground(ThemeColours.LinkedName.Key).AddUiGlow(ThemeColours.LinkedNameGlow.Key)
             .Append($"{setName}")
             .AddUiGlowOff().AddUiForegroundOff()
             .Append(Loc.Get("Store.StoredSuffix"));
