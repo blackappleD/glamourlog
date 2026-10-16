@@ -333,7 +333,7 @@ internal sealed unsafe class OwnershipService : IPluginService, IDisposable {
             return false;
 
         var handle = (ItemHandle)baseId;
-        return handle.TrySetItemLocation() && !handle.InGearset && !handle.IsRepairable;
+        return handle.TrySetItemLocation() && handle.ItemLocation.Container != InventoryType.EquippedItems && !handle.InGearset && !handle.IsRepairable;
     }
 
     private bool IsDresserStorable(uint itemId) {
@@ -362,7 +362,7 @@ internal sealed unsafe class OwnershipService : IPluginService, IDisposable {
             return false;
 
         var handle = (ItemHandle)itemId;
-        return handle.TrySetItemLocation() && !handle.InGearset && !handle.IsRepairable;
+        return handle.TrySetItemLocation() && handle.ItemLocation.Container != InventoryType.EquippedItems && !handle.InGearset && !handle.IsRepairable;
     }
 
     internal static unsafe HashSet<uint> BuildLooseDresserIdSet() {
@@ -387,7 +387,7 @@ internal sealed unsafe class OwnershipService : IPluginService, IDisposable {
         var ids = mirage->PrismBoxItemIds;
         var result = new List<uint>(1);
         for (var i = 0; i < ids.Length; i++) {
-            if (ids[i] == setItemId)
+            if (ItemUtil.GetBaseId(ids[i]).ItemId == setItemId) // hq outfit entries carry the hq offset
                 result.Add((uint)i);
         }
 

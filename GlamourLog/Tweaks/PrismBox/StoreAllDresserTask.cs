@@ -16,6 +16,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
 
     private readonly HashSet<uint> _pendingStoredBaseIds = []; // don't re-select while the game is still moving it
     private readonly HashSet<uint> _visitedInventoryBaseIds = [];
+    private readonly HashSet<uint> _rejectedBaseIds = []; // the game refused these; skip them so one bad piece can't wedge the task
 
     private unsafe int GlamourPrismCount => InventoryManager.Instance()->GetInventoryItemCount(21800); // exactly what GlamourPrismCount calls
 
@@ -43,12 +44,13 @@ internal sealed class StoreAllDresserTask : TaskBase {
 
             if (CanBatchStore(scan.Row, group)) {
                 Log($"Storing outfit batch ({group.Count} pieces) for set {setName}#{scan.Row.RowId}");
-                await StorePieces(group, scan, setName);
-                continue;
+                if (await StorePieces(group, scan, setName))
+                    continue;
+                Log($"batch store rejected for set #{scan.Row.RowId}, falling back to storing pieces individually");
             }
 
             if (group.Count > 1) {
-                Log($"batch unavailable for set #{scan.Row.RowId}, storing {group.Count} pieces individually");
+                Log($"storing {group.Count} pieces of set #{scan.Row.RowId} individually");
                 foreach (var piece in group) {
                     var pieceId = ItemUtil.GetBaseId(piece.ItemId).ItemId;
                     if (pieceId == 0 || IsDresserStoreComplete(piece, pieceId))
@@ -66,11 +68,11 @@ internal sealed class StoreAllDresserTask : TaskBase {
         }
     }
 
-    private async Task StorePieces(List<PrismBoxCrystallizeItem> rows, OutfitStorageCtx scan, string setName) {
+    private async Task<bool> StorePieces(List<PrismBoxCrystallizeItem> rows, OutfitStorageCtx scan, string setName) {
         using var scope = BeginScope(nameof(StorePieces));
 
         if (rows.All(IsSentSlotConsumed))
-            return;
+            return true;
 
         if (rows.Count > GlamourPrismCount) {
             IChatGui.Get().EchoError(Loc.Get("Store.InsufficientPrisms"));
@@ -78,8 +80,14 @@ internal sealed class StoreAllDresserTask : TaskBase {
         }
 
         var result = TrySendDirect(scan, rows);
-        ErrorIf(result.FilledCount == 0, "No store slots populated");
-        ErrorIf(result.FilledCount < 0, "Store rejected");
+        if (result.FilledCount <= 0) {
+            Log($"Store rejected for set {setName}#{scan.Row.RowId} ({(result.FilledCount == 0 ? "no store slots populated" : "request refused by the game")})");
+            if (rows.Count == 1) { // single piece can't be retried any other way; skip it and tell the user
+                MarkRejected(rows);
+                IChatGui.Get().EchoError(Loc.Format("Store.Rejected", setName));
+            }
+            return false;
+        }
 
         Log($"Stored {result.FilledCount} slot(s) for set {setName}#{scan.Row.RowId} (requested {rows.Count})");
         await WaitForStored(result.SentPieces);
@@ -93,6 +101,15 @@ internal sealed class StoreAllDresserTask : TaskBase {
             .Append(Loc.Get("Store.StoredSuffix"));
         IToastGui.Get().ShowQuest(builder.BuiltString);
         await NextFrame(2);
+        return true;
+    }
+
+    private void MarkRejected(IEnumerable<PrismBoxCrystallizeItem> rows) {
+        foreach (var row in rows) {
+            var baseId = ItemUtil.GetBaseId(row.ItemId).ItemId;
+            if (baseId != 0)
+                _rejectedBaseIds.Add(baseId);
+        }
     }
 
     private async Task WaitForStored(IReadOnlyList<PrismBoxCrystallizeItem> sentPieces) {
@@ -143,7 +160,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
                     continue;
 
                 var baseId = ItemUtil.GetBaseId(pieceId).ItemId;
-                if (baseId == 0 || _visitedInventoryBaseIds.Contains(baseId) || _pendingStoredBaseIds.Contains(baseId))
+                if (baseId == 0 || _visitedInventoryBaseIds.Contains(baseId) || _pendingStoredBaseIds.Contains(baseId) || _rejectedBaseIds.Contains(baseId))
                     continue;
 
                 if (!TryCreateStorableRow(pieceId, setScan, out var row))
@@ -161,8 +178,8 @@ internal sealed class StoreAllDresserTask : TaskBase {
         return false;
     }
 
-    private static List<PrismBoxCrystallizeItem> CollectStorablePiecesInSet(OutfitStorageCtx scan)
-        => [.. scan.Row.Items.Where(p => p.RowId != 0)
+    private List<PrismBoxCrystallizeItem> CollectStorablePiecesInSet(OutfitStorageCtx scan)
+        => [.. scan.Row.Items.Where(p => p.RowId != 0 && !_rejectedBaseIds.Contains(ItemUtil.GetBaseId(p.RowId).ItemId))
             .Select(p => {
                 if (!TryCreateStorableRow(p.RowId, scan, out var row))
                     return default;
