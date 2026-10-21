@@ -32,7 +32,7 @@ internal sealed class DataExportRowNode : ResNode {
         _copyButton = new TextButtonNode {
             Position = new Vector2(width - ButtonWidth, 0f),
             Size = new Vector2(ButtonWidth, RowHeight),
-            String = Loc.Get("Export.CopyToClipboard"),
+            String = UIStrings.Export_CopyToClipboard,
             OnClick = onCopy,
         };
         _copyButton.LabelNode.FontType = FontType.Axis;

@@ -9,14 +9,14 @@ internal sealed class DataExportGuidePage : IGuidePage {
     public string Id => "export.data";
     public GuideCategory Category => GuideCategory.Export;
     public int Order => 0;
-    public string Title => Loc.Get("Guide.DataExport.Title");
+    public string Title => UIStrings.Guide_DataExport_Title;
 
     public IReadOnlyList<IGuideBlock> BuildBlocks(GuidePageContext context)
         => [
             new GuideTextBlock(
                 new Lumina.Text.ReadOnly.ReadOnlySeString(
                     new SeStringBuilder()
-                        .Append(Loc.Get("Guide.DataExport.Intro"))
+                        .Append(UIStrings.Guide_DataExport_Intro)
                         .Encode())),
             new DataExportActionBlock(
                 GlamourDataExportFormat.LalaAchievements,

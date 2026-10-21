@@ -1,5 +1,6 @@
 using Dalamud.Game.Text.SeStringHandling;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using GlamourLog.Extensions;
 using GlamourLog.Nodes;
 using KamiToolKit.BaseTypes;
 using KamiToolKit.Nodes;
@@ -73,7 +74,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
             var selector = AddNode(new ListButtonNode {
                 Position = new Vector2(x + 24f, rowY),
                 Size = new Vector2(LeftPaneWidth - 24f, 24f),
-                String = expansionNames.GetValueOrDefault(group.RowId, Loc.Format("PatchPicker.ExpansionNumbered", group.RowId + 1)),
+                String = expansionNames.GetValueOrDefault(group.RowId, string.Format(UIStrings.PatchPicker_ExpansionNumbered, group.RowId + 1)),
                 OnClick = () => SelectGroup(controls, rightX, y, rightWidth),
             });
             controls = new PatchGroupControls(group.RowId, parent, selector, group.Patches);
@@ -99,7 +100,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
             FontType = FontType.Axis,
             FontSize = 12,
             LineSpacing = 12,
-            String = new Lumina.Text.ReadOnly.ReadOnlySeString(new SeStringBuilder().Footnote(Loc.Get("PatchPicker.Footnote")).Encode()),
+            String = new Lumina.Text.ReadOnly.ReadOnlySeString(new SeStringBuilder().Footnote(UIStrings.PatchPicker_Footnote).Encode()),
             TextFlags = TextFlags.Emboss | TextFlags.WordWrap | TextFlags.MultiLine,
             TextColor = ThemeColours.Standard.Current,
         };
@@ -112,7 +113,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
         AddNode(new TextButtonNode {
             Position = new Vector2(x + (contentWidth - buttonWidth) * 0.5f, footerY),
             Size = new Vector2(buttonWidth, buttonHeight),
-            String = Loc.Get("Common.Confirm"),
+            String = UIStrings.Common_Confirm,
             OnClick = ConfirmSelection,
         });
     }
@@ -159,7 +160,7 @@ internal sealed unsafe class PatchPickerWindow : NativeAddon {
                 var checkbox = new CheckboxNode {
                     Position = new Vector2(x + index % columns * columnWidth, y + index / columns * 24f),
                     Size = new Vector2(columnWidth, 24f),
-                    String = Loc.Format("PatchPicker.Patch", patch),
+                    String = string.Format(UIStrings.PatchPicker_Patch, patch),
                     OnClick = value => {
                         if (_syncingCheckboxes)
                             return;

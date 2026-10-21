@@ -7,19 +7,19 @@ internal sealed class LogWindowSettingsGuidePage : IGuidePage {
     public string Id => "settings.log-window";
     public GuideCategory Category => GuideCategory.Settings;
     public int Order => 0;
-    public string Title => Loc.Get("Guide.LogWindowSettings.Title");
+    public string Title => UIStrings.Guide_LogWindowSettings_Title;
 
     public IReadOnlyList<IGuideBlock> BuildBlocks(GuidePageContext context) {
         var configuration = context.Configuration;
         return [
             new CheckboxSettingBlock(
-                Loc.Get("Guide.LogWindowSettings.DisableClose"),
-                Loc.Get("Guide.LogWindowSettings.DisableClose.Tooltip"),
+                UIStrings.Guide_LogWindowSettings_DisableClose,
+                UIStrings.Guide_LogWindowSettings_DisableClose_Tooltip,
                 () => configuration.DisableClose,
                 value => SetDisableClose(context, value)),
             new CheckboxSettingBlock(
-                Loc.Get("Guide.LogWindowSettings.PersistSearch"),
-                Loc.Get("Guide.LogWindowSettings.PersistSearch.Tooltip"),
+                UIStrings.Guide_LogWindowSettings_PersistSearch,
+                UIStrings.Guide_LogWindowSettings_PersistSearch_Tooltip,
                 () => configuration.PersistSearch,
                 value => {
                     configuration.PersistSearch = value;

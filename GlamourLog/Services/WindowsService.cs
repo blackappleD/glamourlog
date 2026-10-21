@@ -31,14 +31,14 @@ internal sealed class WindowsService : IPluginService, IAsyncDisposable {
 
     internal AddonFilterWindow AddonFilterWindow => _addonFilterWindow ??= new AddonFilterWindow {
         InternalName = "GlamourLogAddonFilter",
-        Title = Loc.Get("Window.AddonFilter.Title"),
+        Title = UIStrings.Window_AddonFilter_Title,
         Size = new Vector2(AddonFilterWindow.WindowWidth, AddonFilterWindow.HeightFor(2)),
         RememberClosePosition = false,
     };
 
     internal PatchPickerWindow PatchPickerWindow => _patchPickerWindow ??= new PatchPickerWindow {
         InternalName = "GlamourLogPatchPicker",
-        Title = Loc.Get("Window.PatchPicker.Title"),
+        Title = UIStrings.Window_PatchPicker_Title,
         Size = new Vector2(PatchPickerWindow.WindowWidth, PatchPickerWindow.WindowHeight),
         RememberClosePosition = false,
     };
@@ -47,14 +47,14 @@ internal sealed class WindowsService : IPluginService, IAsyncDisposable {
 
     internal GuideWindow MainMenuWindow => _mainMenuWindow ??= new GuideWindow {
         InternalName = "GlamourLogGuide",
-        Title = Loc.Get("Window.Guide.Title"),
+        Title = UIStrings.Window_Guide_Title,
         Size = new Vector2(GuideWindow.WindowWidth, GuideWindow.WindowHeight),
         RememberClosePosition = false,
     };
 
     internal LogWindow LogWindow => _logWindow ??= new LogWindow(FilterWindow) {
         InternalName = "GlamourLog",
-        Title = Loc.Get("Window.Log.Title"),
+        Title = UIStrings.Window_Log_Title,
         Size = new Vector2(920f, 660f),
         RememberClosePosition = false,
     };

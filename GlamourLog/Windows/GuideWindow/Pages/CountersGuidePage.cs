@@ -1,4 +1,5 @@
 using Dalamud.Game.Text.SeStringHandling;
+using GlamourLog.Extensions;
 
 namespace GlamourLog.Windows.GuideWindow;
 
@@ -6,14 +7,14 @@ internal sealed class CountersGuidePage : IGuidePage {
     public string Id => "guide.counters";
     public GuideCategory Category => GuideCategory.Guide;
     public int Order => 1;
-    public string Title => Loc.Get("Guide.Counters.Title");
+    public string Title => UIStrings.Guide_Counters_Title;
 
     public IReadOnlyList<IGuideBlock> BuildBlocks(GuidePageContext context)
         => [
             new GuideTextBlock(new Lumina.Text.ReadOnly.ReadOnlySeString(
-                new SeStringBuilder().Append(Loc.Get("Guide.Counters.Completed") + "\n")
-                .Append(Loc.Get("Guide.Counters.Saved") + "\n\n")
-                .Footnote(Loc.Get("Guide.Counters.FootnoteCombined") + "\n")
-                .Footnote(Loc.Get("Guide.Counters.FootnoteMisc")).Encode())),
+                new SeStringBuilder().Append(UIStrings.Guide_Counters_Completed + "\n")
+                .Append(UIStrings.Guide_Counters_Saved + "\n\n")
+                .Footnote(UIStrings.Guide_Counters_FootnoteCombined + "\n")
+                .Footnote(UIStrings.Guide_Counters_FootnoteMisc).Encode())),
         ];
 }

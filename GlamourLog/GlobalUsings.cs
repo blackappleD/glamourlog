@@ -9,5 +9,5 @@ global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Linq;
 global using System.Numerics;
-global using GlamourLog.Localization;
+global using GlamourLog.Resources.Localization;
 global using static GlamourLog.Configuration;

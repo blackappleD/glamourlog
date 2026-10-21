@@ -4,6 +4,7 @@ using AllaganLib.GameSheets.ItemSources;
 using AllaganLib.GameSheets.Sheets.Rows;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using GlamourLog.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -190,7 +191,7 @@ internal sealed class CatalogService : IPluginService, IDisposable {
     }
 
     internal IReadOnlyList<SourceFilterOption> GetSourceFilterOptions()
-        => [.. _sourceFilterIndex.SourceTypes.Select(type => new SourceFilterOption(type, ToName(type)))];
+        => [.. _sourceFilterIndex.SourceTypes.Select(type => new SourceFilterOption(type, type.Label()))];
 
     internal IReadOnlyList<SourceSubFilterOption> GetSubSourceFilterOptions(ItemInfoType source)
         => _sourceFilterIndex.Options.GetValueOrDefault(source) ?? [];
@@ -379,7 +380,7 @@ internal sealed class CatalogService : IPluginService, IDisposable {
         var sourceTypes = bySetId.Values
             .SelectMany(bySource => bySource.Keys)
             .Distinct()
-            .OrderBy(ToName, StringComparer.Ordinal)
+            .OrderBy(k => k.Label(), StringComparer.Ordinal)
             .ToList();
         _sourceFilterIndex = new SourceFilterIndex(bySetId, options, sourceTypes);
     }
@@ -408,7 +409,7 @@ internal sealed class CatalogService : IPluginService, IDisposable {
                 AddSourceOption(source.Type, $"achievement:{achievementSource.Achievement.RowId}", achievementSource.Achievement.RowId == 0 ? string.Empty : achievementSource.Achievement.Value.Name.ToString(), bySource, optionLabels);
                 return;
             case ItemPVPSeriesSource seriesSource:
-                AddSourceOption(source.Type, $"pvp-series:{seriesSource.PvpSeries.RowId}", seriesSource.PvpSeries.RowId == 0 ? string.Empty : Loc.Format("Source.PvpSeriesNumbered", seriesSource.PvpSeries.RowId), bySource, optionLabels);
+                AddSourceOption(source.Type, $"pvp-series:{seriesSource.PvpSeries.RowId}", seriesSource.PvpSeries.RowId == 0 ? string.Empty : string.Format(UIStrings.Source_PvpSeriesNumbered, seriesSource.PvpSeries.RowId), bySource, optionLabels);
                 return;
             case ItemCashShopSource:
                 EnsureSource(source.Type, bySource);
@@ -418,12 +419,12 @@ internal sealed class CatalogService : IPluginService, IDisposable {
                 AddSourceOption(
                     source.Type,
                     costItemId != 0 ? $"item:{costItemId}" : $"source-type:{(uint)supplementSource.Type}",
-                    costItemId != 0 ? ItemName(costItemId) : ToName(supplementSource.Type),
+                    costItemId != 0 ? ItemName(costItemId) : supplementSource.Type.Label(),
                     bySource,
                     optionLabels);
                 return;
             case ItemFieldOpCofferSource fieldSource:
-                AddSourceOption(source.Type, $"field-coffer:{(uint)fieldSource.Type}:{(uint)fieldSource.CofferType}", $"{ToName(fieldSource.Type)} ({fieldSource.CofferType})", bySource, optionLabels);
+                AddSourceOption(source.Type, $"field-coffer:{(uint)fieldSource.Type}:{(uint)fieldSource.CofferType}", $"{fieldSource.Type.Label()} ({fieldSource.CofferType})", bySource, optionLabels);
                 return;
             default:
                 EnsureSource(source.Type, bySource);
@@ -438,12 +439,12 @@ internal sealed class CatalogService : IPluginService, IDisposable {
             AddSourceOption(shopSource.Type, $"npc-name:{name}", name, bySource, optionLabels);
         }
         foreach (var npc in npcs.Where(npc => string.IsNullOrWhiteSpace(npc.Name))) {
-            AddSourceOption(shopSource.Type, $"npc:{npc.RowId}", Loc.Format("Source.NpcNumbered", npc.RowId), bySource, optionLabels);
+            AddSourceOption(shopSource.Type, $"npc:{npc.RowId}", string.Format(UIStrings.Source_NpcNumbered, npc.RowId), bySource, optionLabels);
         }
 
         if (npcs.Count == 0 && shopSource.Shop.RowId != 0) {
             var shopName = shopSource.Shop.Name.Trim();
-            AddSourceOption(shopSource.Type, $"shop:{(uint)shopSource.Type}:{shopSource.Shop.RowId}", shopName.Length == 0 ? Loc.Format("Source.VendorShopNumbered", shopSource.Shop.RowId) : shopName, bySource, optionLabels);
+            AddSourceOption(shopSource.Type, $"shop:{(uint)shopSource.Type}:{shopSource.Shop.RowId}", shopName.Length == 0 ? string.Format(UIStrings.Source_VendorShopNumbered, shopSource.Shop.RowId) : shopName, bySource, optionLabels);
         }
     }
 
@@ -469,21 +470,6 @@ internal sealed class CatalogService : IPluginService, IDisposable {
 
     private static string ItemName(uint itemId)
         => itemId != 0 && Item.GetRowRef(itemId) is { IsValid: true, Value.Name: var name } ? name.ToString().Trim() : string.Empty;
-
-    private static string ToName(ItemInfoType type)
-        => Loc.GetOr($"SourceType.{type}", ToEnglishName(type));
-
-    private static string ToEnglishName(ItemInfoType type) {
-        if (type == ItemInfoType.CashShop)
-            return "Mogstation";
-        if (type == ItemInfoType.CraftRecipe)
-            return "Crafting";
-        if (type == ItemInfoType.PVPSeries)
-            return "PvP Series";
-
-        var raw = type.ToString();
-        return string.Concat(raw.Select((character, index) => index > 0 && char.IsUpper(character) && (char.IsLower(raw[index - 1]) || index + 1 < raw.Length && char.IsLower(raw[index + 1])) ? $" {character}" : character.ToString()));
-    }
 
     private static uint NumericKeySuffix(string key)
         => uint.TryParse(key.AsSpan(key.LastIndexOf(':') + 1), out var value) ? value : uint.MaxValue;

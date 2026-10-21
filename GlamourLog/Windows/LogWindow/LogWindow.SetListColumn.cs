@@ -138,7 +138,7 @@ internal unsafe partial class LogWindow {
             var searchRaw = _categoryColumn?.Search.Input.String.ToString() ?? string.Empty;
             var searchTrimmed = string.IsNullOrWhiteSpace(searchRaw) ? string.Empty : searchRaw.Trim();
             if (C.FilterSharedModels != FilterType.Include && !SetListFilterSort.IsVisibleInSetList(set, searchTrimmed, CategoryRows(_selectedCategoryId), q, _filterWindow.Filters))
-                subtitle += Loc.Get("SetList.NotInListSuffix");
+                subtitle += UIStrings.SetList_NotInListSuffix;
         }
 
         return new SetListRowData {
@@ -179,7 +179,7 @@ internal unsafe partial class LogWindow {
         var location = piece?.Location ?? q.Locate(itemId);
         var ownedInStorage = location is PieceLocation.Armoire or PieceLocation.LooseDresser or PieceLocation.OutfitSlot;
         var ownedAnywhere = location is not PieceLocation.None;
-        var subtitle = ownedInStorage ? Loc.Format("SetList.Obtained", 1, 1) : ownedAnywhere ? Loc.Get("SetList.InInventory") : Loc.Format("SetList.Obtained", 0, 1);
+        var subtitle = ownedInStorage ? string.Format(UIStrings.SetList_Obtained, 1, 1) : ownedAnywhere ? UIStrings.SetList_InInventory : string.Format(UIStrings.SetList_Obtained, 0, 1);
 
         var storageState = piece?.BadgeLocation ?? location switch {
             PieceLocation.Armoire => ItemStorageState.Armoire,
@@ -234,20 +234,20 @@ internal unsafe partial class LogWindow {
         var c = status.OwnedCount;
         string core;
         if (set.NonSetCabinetPiece) {
-            core = Loc.Format("SetList.Obtained", status.IsComplete ? 1 : c, 1);
+            core = string.Format(UIStrings.SetList_Obtained, status.IsComplete ? 1 : c, 1);
         }
         else if (status.IsComplete)
-            core = Loc.Format("SetList.Obtained", n, n);
+            core = string.Format(UIStrings.SetList_Obtained, n, n);
         else if (n == 0)
-            core = Loc.Format("SetList.Obtained", 0, 0);
+            core = string.Format(UIStrings.SetList_Obtained, 0, 0);
         else if (c == n)
-            core = Loc.Get("SetList.Completable"); // every piece owned, but at least one still needs storing
+            core = UIStrings.SetList_Completable; // every piece owned, but at least one still needs storing
         else
-            core = Loc.Format("SetList.Obtained", c, n);
+            core = string.Format(UIStrings.SetList_Obtained, c, n);
 
         var sortHint = C.SetListSortMode switch {
-            GlamourSetSortMode.Patch => set.PatchNo == 0m ? Loc.Format("SetList.Patch", "—") : Loc.Format("SetList.Patch", set.PatchNo),
-            GlamourSetSortMode.ItemLevel => set.ItemLevel == 0 ? Loc.Format("SetList.ItemLevel", "—") : Loc.Format("SetList.ItemLevel", set.ItemLevel),
+            GlamourSetSortMode.Patch => set.PatchNo == 0m ? string.Format(UIStrings.SetList_Patch, "—") : string.Format(UIStrings.SetList_Patch, set.PatchNo),
+            GlamourSetSortMode.ItemLevel => set.ItemLevel == 0 ? string.Format(UIStrings.SetList_ItemLevel, "—") : string.Format(UIStrings.SetList_ItemLevel, set.ItemLevel),
             _ => null,
         };
         return sortHint is null ? core : $"{core} · {sortHint}";

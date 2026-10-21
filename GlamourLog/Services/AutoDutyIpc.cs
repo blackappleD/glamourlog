@@ -29,23 +29,23 @@ internal sealed class AutoDutyIpc : IPluginService {
 
     internal void FarmOutfit(uint cfcId) {
         if (cfcId == 0 || ContentFinderCondition.GetRowRef(cfcId) is not { IsValid: true, Value.TerritoryType.RowId: > 0 and var territory }) {
-            IChatGui.Get().EchoMessage(Loc.Get("AutoDuty.InvalidDuty"));
+            IChatGui.Get().EchoMessage(UIStrings.AutoDuty_InvalidDuty);
             return;
         }
 
         if (OwnershipService.Get().IsContentComplete(cfcId)) {
-            IChatGui.Get().EchoMessage(Loc.Get("AutoDuty.AllCollected"));
+            IChatGui.Get().EchoMessage(UIStrings.AutoDuty_AllCollected);
             return;
         }
 
         if (!_run.HasFunction || !_contentHasPath.HasFunction || !_contentHasPath.InvokeFunc(territory)) {
-            IChatGui.Get().EchoMessage(Loc.Get("AutoDuty.NoPath"));
+            IChatGui.Get().EchoMessage(UIStrings.AutoDuty_NoPath);
             return;
         }
 
         var overrides = GetConfigOverrides();
         if (!_pushOverrides.HasFunction || !_pushOverrides.InvokeFunc(overrides)) {
-            IChatGui.Get().EchoError(Loc.Get("AutoDuty.SetupFailed"));
+            IChatGui.Get().EchoError(UIStrings.AutoDuty_SetupFailed);
             return;
         }
 

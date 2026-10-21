@@ -111,11 +111,11 @@ internal unsafe class FilterWindow : NativeAddon {
             Icon = CircleButtonIcon.Exclamation,
             Position = new Vector2(sectionX + LabelWidth + 174f, y + 7f),
             Size = new Vector2(22f),
-            TextTooltip = Loc.Get("Filter.PartialJobTooltip"),
+            TextTooltip = UIStrings.Filter_PartialJobTooltip,
         });
         y += 40f;
 
-        AddLabel(Loc.Get("Filter.Expansion"), sectionX, y, LabelWidth, 24f);
+        AddLabel(UIStrings.Filter_Expansion, sectionX, y, LabelWidth, 24f);
         var expansionX = sectionX + LabelWidth;
         var expansionWidth = sectionWidth - LabelWidth;
         var expansionColumnWidth = sectionWidth / 3f;
@@ -249,17 +249,17 @@ internal unsafe class FilterWindow : NativeAddon {
         AddSectionTitle(Addon.GetRow(66).Text.ToString(), x, y, contentWidth);
         y += 28f;
 
-        AddModeRow(Loc.Get("Filter.Completed"), Loc.Get("Filter.Completed.Tooltip"), draft => draft.Completed, (draft, value) => draft.Completed = value);
-        AddModeRow(Loc.Get("Filter.Incompatible"), Loc.Get("Filter.Incompatible.Tooltip"), draft => draft.Incompatible, (draft, value) => draft.Incompatible = value);
-        AddModeRow(Loc.Get("Filter.Unobtainable"), Loc.Get("Filter.Unobtainable.Tooltip"), draft => draft.Unobtainable, (draft, value) => draft.Unobtainable = value);
-        AddModeRow(Loc.Get("Filter.Mogstation"), Loc.Get("Filter.Mogstation.Tooltip"), draft => draft.Mogstation, (draft, value) => draft.Mogstation = value);
-        AddModeRow(Loc.Get("Filter.Contributable"), Loc.Get("Filter.Contributable.Tooltip"), draft => draft.Contributable, (draft, value) => draft.Contributable = value);
-        AddModeRow(Loc.Get("Filter.Affordable"), Loc.Get("Filter.Affordable.Tooltip"), draft => draft.Affordable, (draft, value) => draft.Affordable = value);
-        AddModeRow(Loc.Get("Filter.Tradeable"), Loc.Get("Filter.Tradeable.Tooltip"), draft => draft.Tradeable, (draft, value) => draft.Tradeable = value);
-        AddModeRow(Loc.Get("Filter.Started"), Loc.Get("Filter.Started.Tooltip"), draft => draft.Started, (draft, value) => draft.Started = value);
-        AddModeRow(Loc.Get("Filter.Armoire"), Loc.Get("Filter.Armoire.Tooltip"), draft => draft.Armoire, (draft, value) => draft.Armoire = value);
-        AddModeRow(Loc.Get("Filter.Misplaced"), Loc.Get("Filter.Misplaced.Tooltip"), draft => draft.Misplaced, (draft, value) => draft.Misplaced = value);
-        AddModeRow(Loc.Get("Filter.SharedModel"), Loc.Get("Filter.SharedModel.Tooltip"), draft => draft.SharedModel, (draft, value) => draft.SharedModel = value);
+        AddModeRow(UIStrings.Filter_Completed, UIStrings.Filter_Completed_Tooltip, draft => draft.Completed, (draft, value) => draft.Completed = value);
+        AddModeRow(UIStrings.Filter_Incompatible, UIStrings.Filter_Incompatible_Tooltip, draft => draft.Incompatible, (draft, value) => draft.Incompatible = value);
+        AddModeRow(UIStrings.Filter_Unobtainable, UIStrings.Filter_Unobtainable_Tooltip, draft => draft.Unobtainable, (draft, value) => draft.Unobtainable = value);
+        AddModeRow(UIStrings.Filter_Mogstation, UIStrings.Filter_Mogstation_Tooltip, draft => draft.Mogstation, (draft, value) => draft.Mogstation = value);
+        AddModeRow(UIStrings.Filter_Contributable, UIStrings.Filter_Contributable_Tooltip, draft => draft.Contributable, (draft, value) => draft.Contributable = value);
+        AddModeRow(UIStrings.Filter_Affordable, UIStrings.Filter_Affordable_Tooltip, draft => draft.Affordable, (draft, value) => draft.Affordable = value);
+        AddModeRow(UIStrings.Filter_Tradeable, UIStrings.Filter_Tradeable_Tooltip, draft => draft.Tradeable, (draft, value) => draft.Tradeable = value);
+        AddModeRow(UIStrings.Filter_Started, UIStrings.Filter_Started_Tooltip, draft => draft.Started, (draft, value) => draft.Started = value);
+        AddModeRow(UIStrings.Filter_Armoire, UIStrings.Filter_Armoire_Tooltip, draft => draft.Armoire, (draft, value) => draft.Armoire = value);
+        AddModeRow(UIStrings.Filter_Misplaced, UIStrings.Filter_Misplaced_Tooltip, draft => draft.Misplaced, (draft, value) => draft.Misplaced = value);
+        AddModeRow(UIStrings.Filter_SharedModel, UIStrings.Filter_SharedModel_Tooltip, draft => draft.SharedModel, (draft, value) => draft.SharedModel = value);
         SyncModeRows();
 
         const float buttonWidth = 116f;
@@ -505,6 +505,20 @@ internal unsafe class FilterWindow : NativeAddon {
         var picker = WindowsService.Get().PcSearchSelectClassPicker;
         if (!_committed)
             picker.SetSelectedClassJobIds(Filters.ClassJobIds, notify: false);
+
+        try {
+            // do this before base.OnFinalize just to prevent them from accessing destroyed nodes
+            _currencyFilter?.CollapseIfOpen();
+            if (_sourceDropDown is { IsCollapsed: false })
+                _sourceDropDown.Collapse(playSoundEffect: false);
+            if (_subSourceDropDown is { IsCollapsed: false })
+                _subSourceDropDown.Collapse(playSoundEffect: false);
+
+            _currencyFilter?.DropDown.Dispose();
+            _sourceDropDown?.Dispose();
+            _subSourceDropDown?.Dispose();
+        }
+        catch { }
 
         // don't dispose nodes here
         _nodes.Clear();

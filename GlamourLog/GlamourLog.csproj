@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
 	<PropertyGroup>
-		<!-- 国服维护版版本号：前三段跟随上游（上游 15.74 视为 15.74.0），第 4 段从 2001 起递增 -->
-		<Version>15.74.0.2002</Version>
+		<!-- 国服维护版版本号：前三段跟随上游（上游 15.75 视为 15.75.0），第 4 段从 2001 起递增 -->
+		<Version>15.75.0.2001</Version>
 		<LangVersion>preview</LangVersion>
 		<Author>croizat, blackappleD</Author>
 		<Name>Glamour Log（国服维护版）</Name>
@@ -21,7 +21,18 @@
     </ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Localization\*.json" LogicalName="GlamourLog.Localization.%(Filename).json" />
+		<Compile Update="Resources\Localization\UIStrings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>UIStrings.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Localization\UIStrings.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>UIStrings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(LocalCS)'=='true'">

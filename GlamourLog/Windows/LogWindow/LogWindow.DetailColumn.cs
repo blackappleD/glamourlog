@@ -34,9 +34,9 @@ internal unsafe partial class LogWindow {
 
         if (_selectedSet == null) {
             sections.Add(new TreeListSection<DetailListRowData> {
-                Header = Loc.Get("Detail.SetDetails"),
+                Header = UIStrings.Detail_SetDetails,
                 Entries = [
-                    new DetailListRowData { Kind = DetailRowKind.JournalHeader, PrimaryText = Loc.Get("Detail.NoSetSelected") },
+                    new DetailListRowData { Kind = DetailRowKind.JournalHeader, PrimaryText = UIStrings.Detail_NoSetSelected },
                 ],
             });
             DetailList.AssignSections(sections);
@@ -70,7 +70,7 @@ internal unsafe partial class LogWindow {
         }
 
         sections.Add(new TreeListSection<DetailListRowData> {
-            Header = isCabinetOnly ? Loc.Get("Detail.ItemDetails") : Loc.Get("Detail.SetDetails"),
+            Header = isCabinetOnly ? UIStrings.Detail_ItemDetails : UIStrings.Detail_SetDetails,
             Entries = detailsEntries,
         });
 
@@ -79,7 +79,7 @@ internal unsafe partial class LogWindow {
             var costEntries = new List<DetailListRowData> {
                 new() {
                     Kind = DetailRowKind.JournalHeader,
-                    PrimaryText = _selectedSourcePieceItemId is not null ? Loc.Get("Detail.CurrenciesSingle") : Loc.Get("Detail.CurrenciesFull"),
+                    PrimaryText = _selectedSourcePieceItemId is not null ? UIStrings.Detail_CurrenciesSingle : UIStrings.Detail_CurrenciesFull,
                 },
             };
             var ordered = costTotals.OrderBy(x => Item.GetRow(x.Key).Name.ToString(), StringComparer.Ordinal).ToList();
@@ -100,7 +100,7 @@ internal unsafe partial class LogWindow {
             }
 
             sections.Add(new TreeListSection<DetailListRowData> {
-                Header = Loc.Get("Detail.Costs"),
+                Header = UIStrings.Detail_Costs,
                 Entries = costEntries,
             });
         }
@@ -112,7 +112,7 @@ internal unsafe partial class LogWindow {
             DetailList.DutyChestMeasureNode);
         if (sourceChildren.Count > 0) {
             sections.Add(new TreeListSection<DetailListRowData> {
-                Header = Loc.Get("Detail.Sources"),
+                Header = UIStrings.Detail_Sources,
                 Children = sourceChildren,
             });
         }
@@ -165,7 +165,7 @@ internal unsafe partial class LogWindow {
             var entries = new List<DetailListRowData> {
                 new() {
                     Kind = DetailRowKind.JournalHeader,
-                    PrimaryText = Loc.Get("Detail.ItemsWithAppearance"),
+                    PrimaryText = UIStrings.Detail_ItemsWithAppearance,
                 },
             };
 
@@ -181,7 +181,7 @@ internal unsafe partial class LogWindow {
             }
 
             return new TreeListSection<DetailListRowData> {
-                Header = Loc.Get("Detail.SharedModels"),
+                Header = UIStrings.Detail_SharedModels,
                 Entries = entries,
             };
         }
@@ -195,7 +195,7 @@ internal unsafe partial class LogWindow {
         var setEntries = new List<DetailListRowData> {
             new() {
                 Kind = DetailRowKind.JournalHeader,
-                PrimaryText = Loc.Get("Detail.SetsWithSameModel"),
+                PrimaryText = UIStrings.Detail_SetsWithSameModel,
             },
         };
 
@@ -207,7 +207,7 @@ internal unsafe partial class LogWindow {
         }
 
         return new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Detail.SharedModels"),
+            Header = UIStrings.Detail_SharedModels,
             Entries = setEntries,
         };
     }

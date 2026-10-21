@@ -129,7 +129,7 @@ public unsafe partial class GuideWindow : NativeAddon {
             FontSize = 20,
             LineSpacing = 20,
             AlignmentType = AlignmentType.Left,
-            String = Loc.Get("Guide.Category"),
+            String = UIStrings.Guide_Category,
             TextColor = ThemeColours.Heading.Current,
         };
         ThemeColours.ApplyEmboss(_categoryHeading);

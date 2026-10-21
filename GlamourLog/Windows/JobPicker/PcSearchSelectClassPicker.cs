@@ -309,7 +309,7 @@ internal sealed unsafe class PcSearchSelectClassPicker : IDisposable {
             && ClassJob.GetRowRef((uint)(iconId - 62000)) is { IsValid: true, Value.Name: var name }
             && !name.IsEmpty)
             return name.ToString();
-        return Loc.GetOr($"JobPicker.{captured}", captured);
+        return Loc.GetOr($"JobPicker_{captured}", captured);
     }
 
     private void AssignSetupString(ref AtkValue value, string text) {

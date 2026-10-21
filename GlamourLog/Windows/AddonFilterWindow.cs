@@ -36,14 +36,14 @@ internal unsafe class AddonFilterWindow : NativeAddon {
 
     public static FilterOption[] ArmoireOptions { get; } = [
         new(
-            Loc.Get("AddonFilter.HideDeposited"),
-            Loc.Get("AddonFilter.Armoire.HideDeposited.Tooltip"),
+            UIStrings.AddonFilter_HideDeposited,
+            UIStrings.AddonFilter_Armoire_HideDeposited_Tooltip,
             c => c.HideCabinetOwnedItems,
             c => c.HideCabinetOwnedItems ^= true,
             () => CabinetListHandler.Get().OnConfigChanged()),
         new(
-            Loc.Get("AddonFilter.Armoire.HideGearset"),
-            Loc.Get("AddonFilter.Armoire.HideGearset.Tooltip"),
+            UIStrings.AddonFilter_Armoire_HideGearset,
+            UIStrings.AddonFilter_Armoire_HideGearset_Tooltip,
             c => c.HideCabinetGearsetItems,
             c => c.HideCabinetGearsetItems ^= true,
             () => CabinetListHandler.Get().OnConfigChanged()),
@@ -51,20 +51,20 @@ internal unsafe class AddonFilterWindow : NativeAddon {
 
     public static FilterOption[] DresserOptions { get; } = [
         new(
-            Loc.Get("AddonFilter.HideDeposited"),
-            Loc.Get("AddonFilter.Dresser.HideDeposited.Tooltip"),
+            UIStrings.AddonFilter_HideDeposited,
+            UIStrings.AddonFilter_Dresser_HideDeposited_Tooltip,
             c => c.HideCrystallizeOwnedItems,
             c => c.HideCrystallizeOwnedItems ^= true,
             () => CrystallizeListHandler.Get().OnConfigChanged()),
         new(
-            Loc.Get("AddonFilter.Dresser.HideArmoireEligible"),
-            Loc.Get("AddonFilter.Dresser.HideArmoireEligible.Tooltip"),
+            UIStrings.AddonFilter_Dresser_HideArmoireEligible,
+            UIStrings.AddonFilter_Dresser_HideArmoireEligible_Tooltip,
             c => c.HideCrystallizeArmoireEligibleItems,
             c => c.HideCrystallizeArmoireEligibleItems ^= true,
             () => CrystallizeListHandler.Get().OnConfigChanged()),
         new(
-            Loc.Get("AddonFilter.Dresser.HideNonOutfit"),
-            Loc.Get("AddonFilter.Dresser.HideNonOutfit.Tooltip"),
+            UIStrings.AddonFilter_Dresser_HideNonOutfit,
+            UIStrings.AddonFilter_Dresser_HideNonOutfit_Tooltip,
             c => c.HideCrystallizeNonOutfitItems,
             c => c.HideCrystallizeNonOutfitItems ^= true,
             () => CrystallizeListHandler.Get().OnConfigChanged()),

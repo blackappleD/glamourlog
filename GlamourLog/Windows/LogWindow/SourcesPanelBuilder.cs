@@ -4,6 +4,7 @@ using AllaganLib.GameSheets.ItemSources;
 using AllaganLib.GameSheets.Model;
 using AllaganLib.GameSheets.Sheets;
 using AllaganLib.GameSheets.Sheets.Rows;
+using GlamourLog.Extensions;
 using GlamourLog.Nodes;
 using GlamourLog.Services;
 using KamiToolKit.Classes;
@@ -133,11 +134,11 @@ internal static class SourcesPanelBuilder {
             var hasGeneral = b.General.Count > 0;
             var hasChests = chestKeysThisDuty.Count > 0;
 
-            var maxDutyChestLabelWidth = chestIndex.ComputeMaxLabelColumnWidth(dutyChestMeasure, fullChestOrder, extraPrimaryLabel: hasGeneral && hasChests ? Loc.Get("Source.General") : null);
+            var maxDutyChestLabelWidth = chestIndex.ComputeMaxLabelColumnWidth(dutyChestMeasure, fullChestOrder, extraPrimaryLabel: hasGeneral && hasChests ? UIStrings.Source_General : null);
 
             if (hasGeneral) {
                 if (hasChests)
-                    AppendIconStripRow(entries, Loc.Get("Source.General"), string.Empty, b.General, scope, iconOnly: false, sourceChestLabelColumnWidth: maxDutyChestLabelWidth);
+                    AppendIconStripRow(entries, UIStrings.Source_General, string.Empty, b.General, scope, iconOnly: false, sourceChestLabelColumnWidth: maxDutyChestLabelWidth);
                 else
                     AppendIconStripRow(entries, string.Empty, b.General, scope, iconOnly: true);
             }
@@ -147,7 +148,7 @@ internal static class SourcesPanelBuilder {
                 var hasChest = chestIndex.TryGet(ck, out var chest);
                 AppendIconStripRow(
                     entries,
-                    Loc.Format("Chest.Numbered", chestNum),
+                    string.Format(UIStrings.Chest_Numbered, chestNum),
                     hasChest ? chest.SecondaryLabel : string.Empty,
                     b.Chests[ck],
                     scope,
@@ -158,7 +159,7 @@ internal static class SourcesPanelBuilder {
         }
 
         return entries.Count == 0 ? null : new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Duties"),
+            Header = UIStrings.Source_Duties,
             Entries = entries,
         };
     }
@@ -202,7 +203,7 @@ internal static class SourcesPanelBuilder {
         }
 
         return entries.Count == 0 ? null : new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Fates"),
+            Header = UIStrings.Source_Fates,
             Entries = entries,
         };
     }
@@ -235,13 +236,13 @@ internal static class SourcesPanelBuilder {
                 var shop = shopSource.Shop;
                 var shopName = shop.Name.Trim();
                 if (string.IsNullOrEmpty(shopName))
-                    shopName = FormatShopTypeLabel(shopSource.Type);
+                    shopName = shopSource.Type.Label();
                 foreach (var npc in shop.ENpcs.OfType<ENpcBaseRow>().Where(n => n.RowId != 0).OrderBy(n => n.RowId)) {
                     if (TryNavigateTargetFromNpc(npc) is not { } nav)
                         continue;
                     var npcName = npc.Name.ToString().Trim();
                     if (npcName.Length == 0)
-                        npcName = Loc.Format("Source.NpcNumbered", npc.RowId);
+                        npcName = string.Format(UIStrings.Source_NpcNumbered, npc.RowId);
                     return (nav, $"{npcName}\n{shopName}", npcName, shopName);
                 }
             }
@@ -251,8 +252,8 @@ internal static class SourcesPanelBuilder {
             if (!catalog.GetPrimaryItemCosts(pieceId, cat).Any(c => c.ItemId == currencyItemId))
                 continue;
             if (acquisition.GetSources(pieceId).Any(static s => s is ItemCashShopSource)) {
-                var cashShop = FormatShopTypeLabel(ItemInfoType.CashShop);
-                return (null, $"{Loc.Get("Source.MogStation")}\n{cashShop}", Loc.Get("Source.MogStation"), cashShop);
+                var cashShop = ItemInfoType.CashShop.Label();
+                return (null, $"{UIStrings.Source_MogStation}\n{cashShop}", UIStrings.Source_MogStation, cashShop);
             }
         }
 
@@ -297,26 +298,26 @@ internal static class SourcesPanelBuilder {
             return null;
 
         var entries = new List<DetailListRowData>();
-        foreach (var (type, byCost) in supplement.OrderBy(e => HumanizeInfoType(e.Key), StringComparer.Ordinal)) {
+        foreach (var (type, byCost) in supplement.OrderBy(e => e.Key.Label(), StringComparer.Ordinal)) {
             entries.Add(new DetailListRowData {
                 Kind = DetailRowKind.JournalHeader,
-                PrimaryText = HumanizeInfoType(type),
+                PrimaryText = type.Label(),
             });
             foreach (var (costId, pieceSet) in byCost.OrderBy(e => Item.GetRow(e.Key).Name.ToString(), StringComparer.Ordinal)) {
                 AppendArrowFlowRow(entries, [costId], pieceSet);
             }
         }
 
-        foreach (var (key, pieceSet) in fieldOps.OrderBy(e => HumanizeInfoType(e.Key.Type)).ThenBy(e => e.Key.CofferKind)) {
+        foreach (var (key, pieceSet) in fieldOps.OrderBy(e => e.Key.Type.Label()).ThenBy(e => e.Key.CofferKind)) {
             entries.Add(new DetailListRowData {
                 Kind = DetailRowKind.JournalHeader,
-                PrimaryText = $"{HumanizeInfoType(key.Type)} ({key.CofferKind})",
+                PrimaryText = $"{key.Type.Label()} ({key.CofferKind})",
             });
             AppendIconStripRow(entries, string.Empty, pieceSet, scope, iconOnly: true);
         }
 
         return new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Lootboxes"),
+            Header = UIStrings.Source_Lootboxes,
             Entries = entries,
         };
     }
@@ -342,7 +343,7 @@ internal static class SourcesPanelBuilder {
         foreach (var (rid, agg) in byRecipe.OrderBy(e => Item.GetRow(e.Value.ResultItemId).Name.ToString(), StringComparer.Ordinal)) {
             var recipeName = Item.GetRow(agg.ResultItemId).Name.ToString().Trim();
             if (recipeName.Length == 0)
-                recipeName = Loc.Format("Source.RecipeNumbered", rid);
+                recipeName = string.Format(UIStrings.Source_RecipeNumbered, rid);
             entries.Add(new DetailListRowData {
                 Kind = DetailRowKind.JournalHeader,
                 PrimaryText = recipeName,
@@ -361,7 +362,7 @@ internal static class SourcesPanelBuilder {
         }
 
         return new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Crafting"),
+            Header = UIStrings.Source_Crafting,
             Entries = entries,
         };
     }
@@ -398,7 +399,7 @@ internal static class SourcesPanelBuilder {
         }
 
         return new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Desynthesis"),
+            Header = UIStrings.Source_Desynthesis,
             Entries = entries,
         };
     }
@@ -415,7 +416,7 @@ internal static class SourcesPanelBuilder {
                 if (!byQuest.TryGetValue(qid, out var agg)) {
                     var title = qs.Quest.Value.Name.ToString().Trim();
                     if (title.Length == 0)
-                        title = Loc.Format("Source.QuestNumbered", qid);
+                        title = string.Format(UIStrings.Source_QuestNumbered, qid);
                     agg = new QuestAgg {
                         Title = title,
                         NavigateTarget = TryQuestNavigateTarget(qs.Quest),
@@ -441,7 +442,7 @@ internal static class SourcesPanelBuilder {
         }
 
         return new TreeListSection<DetailListRowData> {
-            Header = Loc.Get("Source.Quests"),
+            Header = UIStrings.Source_Quests,
             Entries = entries,
         };
     }
@@ -504,10 +505,4 @@ internal static class SourcesPanelBuilder {
             SourceIconOverflow = overflow,
         });
     }
-
-    private static string HumanizeInfoType(ItemInfoType t)
-        => Loc.GetOr($"SourceType.{t}", t.ToString().Replace("Shop", " Shop", StringComparison.Ordinal));
-
-    private static string FormatShopTypeLabel(ItemInfoType type)
-        => Loc.GetOr($"SourceType.{type}", type.ToString().Replace("Shop", " Shop", StringComparison.Ordinal));
 }

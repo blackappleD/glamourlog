@@ -75,7 +75,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
             return true;
 
         if (rows.Count > GlamourPrismCount) {
-            IChatGui.Get().EchoError(Loc.Get("Store.InsufficientPrisms"));
+            IChatGui.Get().EchoError(UIStrings.Store_InsufficientPrisms);
             throw new InvalidOperationException($"Insufficent glamour prisms");
         }
 
@@ -84,7 +84,7 @@ internal sealed class StoreAllDresserTask : TaskBase {
             Log($"Store rejected for set {setName}#{scan.Row.RowId} ({(result.FilledCount == 0 ? "no store slots populated" : "request refused by the game")})");
             if (rows.Count == 1) { // single piece can't be retried any other way; skip it and tell the user
                 MarkRejected(rows);
-                IChatGui.Get().EchoError(Loc.Format("Store.Rejected", setName));
+                IChatGui.Get().EchoError(string.Format(UIStrings.Store_Rejected, setName));
             }
             return false;
         }
@@ -94,11 +94,11 @@ internal sealed class StoreAllDresserTask : TaskBase {
         MarkStored(result.SentPieces.Select(p => p.ItemId));
 
         var builder = new SeStringBuilder()
-            .Append(Loc.Format(result.FilledCount is 1 ? "Store.StoredOne" : "Store.StoredMany", result.FilledCount))
+            .Append(string.Format(result.FilledCount is 1 ? UIStrings.Store_StoredOne : UIStrings.Store_StoredMany, result.FilledCount))
             .AddUiForeground(ThemeColours.LinkedName.Key).AddUiGlow(ThemeColours.LinkedNameGlow.Key)
             .Append($"{setName}")
             .AddUiGlowOff().AddUiForegroundOff()
-            .Append(Loc.Get("Store.StoredSuffix"));
+            .Append(UIStrings.Store_StoredSuffix);
         IToastGui.Get().ShowQuest(builder.BuiltString);
         await NextFrame(2);
         return true;
