@@ -793,6 +793,15 @@
   <data name="Guide_Icons_WarningDresser" xml:space="preserve">
     <value>[h]投影台警告[/h]：当物品存放在投影台中、但本可以放入收藏柜时显示。同样适用于套装。</value>
   </data>
+  <data name="Guide_Translations_Title" xml:space="preserve">
+    <value>翻译</value>
+  </data>
+  <data name="Guide_Translations_Intro" xml:space="preserve">
+    <value>GlamourLog 的显示语言与 Dalamud 保持一致。翻译由社区在 [e]Crowdin[/e] 上完成。如果你的语言缺失或翻译不完整，欢迎前往该平台参与翻译。</value>
+  </data>
+  <data name="Guide_Translations_OpenCrowdin" xml:space="preserve">
+    <value>打开 Crowdin</value>
+  </data>
   <data name="Guide_Integrations_Title" xml:space="preserve">
     <value>插件联动</value>
   </data>
